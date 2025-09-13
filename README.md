@@ -8,4 +8,6 @@ Perl + Dancer2 contact manager with full CRUD.
 - Search contacts
 - Edit contacts
 - Delete contacts
+- Create backup
+- Restore backup
 - Responsive design with navbar and scrollable table
