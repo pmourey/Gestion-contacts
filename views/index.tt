@@ -1,0 +1,24 @@
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+<div class="navbar">
+    <a href="/" class="[% current_page eq 'home' ? 'active' : '' %]">Accueil</a>
+    <a href="/rechercher" class="[% current_page eq 'rechercher' ? 'active' : '' %]">Rechercher</a>
+</div>
+
+<div style="margin-top:20px;">
+    <a href="/backup"><button>Créer un backup</button></a>
+    <form action="/restore" method="get" style="display:inline;">
+        <input type="text" name="file" placeholder="Nom du fichier de backup" required>
+        <button type="submit">Restaurer backup</button>
+    </form>
+</div>
+
+<h1>Gestion des contacts</h1>
+
+<form action="/ajouter" method="post">
+    <h3>Ajouter un contact</h3>
+    <input type="text" name="nom" placeholder="Nom" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="text" name="tel" placeholder="Téléphone" required>
+    <button type="submit">Ajouter</button>
+</form>

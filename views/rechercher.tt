@@ -1,0 +1,54 @@
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+<div class="navbar">
+    <a href="/" class="[% current_page eq 'home' ? 'active' : '' %]">Accueil</a>
+    <a href="/rechercher" class="[% current_page eq 'rechercher' ? 'active' : '' %]">Rechercher</a>
+</div>
+
+<h1>Rechercher un contact</h1>
+
+<form action="/rechercher" method="get">
+    <input type="text" name="q" placeholder="Nom, email ou téléphone"
+           value="[% recherche %]">
+    <button type="submit">Rechercher</button>
+</form>
+
+[% IF recherche %]
+    <h2>Résultats pour : "[% recherche %]"</h2>
+    [% IF contacts.size > 0 %]
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Actions</th>
+            </tr>
+            [% FOREACH c IN contacts %]
+            <tr>
+                <td>[% c.nom %]</td>
+                <td>[% c.email %]</td>
+                <td>[% c.tel %]</td>
+                <td>
+                    <form action="/modifier" method="get" style="display:inline;">
+                        <input type="hidden" name="nom" value="[% c.nom %]">
+                        <input type="hidden" name="email" value="[% c.email %]">
+                        <input type="hidden" name="tel" value="[% c.tel %]">
+                        <button type="submit">Modifier</button>
+                    </form>
+
+                    <form action="/supprimer" method="post" style="display:inline;">
+                        <input type="hidden" name="nom" value="[% c.nom %]">
+                        <input type="hidden" name="email" value="[% c.email %]">
+                        <input type="hidden" name="tel" value="[% c.tel %]">
+                        <button type="submit" onclick="return confirm('Supprimer ce contact ?');">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            [% END %]
+        </table>
+    </div>
+    [% ELSE %]
+        <p>Aucun contact trouvé.</p>
+    [% END %]
+[% END %]

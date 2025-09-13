@@ -1,0 +1,22 @@
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+<div class="navbar">
+    <a href="/" class="[% current_page eq 'home' ? 'active' : '' %]">Accueil</a>
+    <a href="/rechercher" class="[% current_page eq 'rechercher' ? 'active' : '' %]">Rechercher</a>
+</div>
+
+<h1>Modifier un contact</h1>
+
+<form action="/modifier" method="post">
+    <input type="hidden" name="old_nom" value="[% old_nom %]">
+    <input type="hidden" name="old_email" value="[% old_email %]">
+    <input type="hidden" name="old_tel" value="[% old_tel %]">
+
+    <label>Nom:</label>
+    <input type="text" name="nom" value="[% old_nom %]" required>
+    <label>Email:</label>
+    <input type="email" name="email" value="[% old_email %]" required>
+    <label>Téléphone:</label>
+    <input type="text" name="tel" value="[% old_tel %]" required>
+
+    <button type="submit

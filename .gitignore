@@ -1,0 +1,13 @@
+# Perl temporary files
+*.bak
+*.swp
+*.tmp
+
+# Dancer2 files
+__pycache__/
+*.pyc
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
