@@ -15,3 +15,6 @@
     <input type="text" name="tel" placeholder="Téléphone" required>
     <button type="submit" class="btn-add">Ajouter</button>
 </form>
+
+[% INCLUDE _footer.tt %]
+
