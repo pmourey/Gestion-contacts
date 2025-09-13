@@ -1,0 +1,6 @@
+<div class="navbar">
+    <a href="/" class="[% IF current_page == 'home' %]active[% END %]">Accueil</a>
+    <a href="/rechercher" class="[% IF current_page == 'rechercher' %]active[% END %]">Rechercher</a>
+    <a href="/contacts" class="[% IF current_page == 'contacts' %]active[% END %]">Contacts</a>
+    <a href="/restore" class="[% IF current_page == 'restore' %]active[% END %]">Restore</a>
+</div>

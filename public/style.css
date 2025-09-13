@@ -131,3 +131,48 @@ button:hover {
     background-color: #13856e;
 }
 
+/* Style commun pour tous les boutons */
+button, a.btn-edit {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Ajouter → bleu */
+.btn-add {
+    background-color: #2196F3;
+    color: white;
+}
+.btn-add:hover {
+    background-color: #1976D2;
+}
+
+/* Modifier → orange */
+.btn-edit {
+    background-color: #FF9800;
+    color: white;
+}
+.btn-edit:hover {
+    background-color: #FB8C00;
+}
+
+/* Supprimer → rouge */
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+.btn-delete:hover {
+    background-color: #d32f2f;
+}
+
+/* Restaurer → vert */
+.btn-restore {
+    background-color: #4CAF50;
+    color: white;
+}
+.btn-restore:hover {
+    background-color: #45a049;
+}

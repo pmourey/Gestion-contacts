@@ -1,0 +1,7 @@
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+[% INCLUDE _navbar.tt %]
+
+<p>[% message %]</p>
+
+<p><a href="/">Retour à l'accueil</a></p>

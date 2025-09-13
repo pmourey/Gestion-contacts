@@ -1,9 +1,6 @@
 <link rel="stylesheet" type="text/css" href="/style.css">
 
-<div class="navbar">
-    <a href="/" class="[% current_page eq 'home' ? 'active' : '' %]">Accueil</a>
-    <a href="/rechercher" class="[% current_page eq 'rechercher' ? 'active' : '' %]">Rechercher</a>
-</div>
+[% INCLUDE _navbar.tt %]
 
 <h1>Modifier un contact</h1>
 
@@ -19,4 +16,5 @@
     <label>Téléphone:</label>
     <input type="text" name="tel" value="[% old_tel %]" required>
 
-    <button type="submit
+    <button type="submit">Enregistrer</button>
+</form>

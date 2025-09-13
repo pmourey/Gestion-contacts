@@ -1,0 +1,44 @@
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+[% INCLUDE _navbar.tt %]
+
+<h1>Liste des contacts</h1>
+
+[% IF contacts.size > 0 %]
+<div class="table-container">
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Actions</th>
+        </tr>
+        [% FOREACH c IN contacts %]
+        <tr>
+            <td>[% c.nom %]</td>
+            <td>[% c.email %]</td>
+            <td>[% c.tel %]</td>
+            <td>
+                <!-- Supprimer -->
+                <form action="/supprimer?q=" method="post" style="display:inline">
+                    <input type="hidden" name="nom" value="[% c.nom %]">
+                    <input type="hidden" name="email" value="[% c.email %]">
+                    <input type="hidden" name="tel" value="[% c.tel %]">
+                    <button type="submit" class="btn-delete" onclick="return confirm('Supprimer ce contact ?');">Supprimer</button>
+                </form>
+
+                <!-- Modifier -->
+                <form action="/modifier" method="get" style="display:inline">
+                    <input type="hidden" name="nom" value="[% c.nom %]">
+                    <input type="hidden" name="email" value="[% c.email %]">
+                    <input type="hidden" name="tel" value="[% c.tel %]">
+                    <button type="submit" class="btn-edit">Modifier</button>
+                </form>
+            </td>
+        </tr>
+        [% END %]
+    </table>
+</div>
+[% ELSE %]
+    <p>Aucun contact enregistré.</p>
+[% END %]

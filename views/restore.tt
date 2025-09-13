@@ -1,0 +1,32 @@
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+[% INCLUDE _navbar.tt %]
+
+<h1>Restaurer un backup</h1>
+
+[% IF backups.size > 0 %]
+    <table>
+        <tr><th>Fichier</th><th>Date de création</th><th>Actions</th></tr>
+        [% FOREACH b IN backups %]
+        <tr>
+            <td>[% b.file %]</td>
+            <td>[% b.date %]</td>
+            <td>
+                <!-- Bouton Restaurer -->
+                <form action="/do_restore" method="get" style="display:inline">
+                    <input type="hidden" name="file" value="[% b.file %]">
+                    <button type="submit" class="btn-restore">Restaurer</button>
+                </form>
+
+                <!-- Bouton Supprimer -->
+                <form action="/delete_backup" method="post" style="display:inline">
+                    <input type="hidden" name="file" value="[% b.file %]">
+                    <button type="submit" class="btn-delete" onclick="return confirm('Supprimer ce backup ?');">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        [% END %]
+    </table>
+[% ELSE %]
+    <p>Aucun backup trouvé.</p>
+[% END %]
