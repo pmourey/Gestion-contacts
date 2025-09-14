@@ -3,9 +3,10 @@ use strict;
 use warnings FATAL => 'all';
 
 use Dancer2;
+use POSIX 'strftime';
+
 use lib 'lib';
 use ContactManager;
-use POSIX;
 
 # Home page
 get '/' => sub {
@@ -14,9 +15,9 @@ get '/' => sub {
 
 # Add contact
 post '/ajouter' => sub {
-    my $nom   = body_parameters->get('nom');
+    my $nom = body_parameters->get('nom');
     my $email = body_parameters->get('email');
-    my $tel   = body_parameters->get('tel');
+    my $tel = body_parameters->get('tel');
     ContactManager::ajouter_contact($nom, $email, $tel);
     redirect '/';
 };
@@ -29,18 +30,18 @@ get '/rechercher' => sub {
         @contacts = ContactManager::rechercher_contacts($recherche);
     }
     return template 'rechercher', {
-        recherche     => $recherche,
-        contacts      => \@contacts,
-        current_page  => 'rechercher',
+        recherche    => $recherche,
+        contacts     => \@contacts,
+        current_page => 'rechercher',
     };
 };
 
 
 # Delete contact
 post '/supprimer' => sub {
-    my $nom   = body_parameters->get('nom');
+    my $nom = body_parameters->get('nom');
     my $email = body_parameters->get('email');
-    my $tel   = body_parameters->get('tel');
+    my $tel = body_parameters->get('tel');
     ContactManager::supprimer_contact($nom, $email, $tel);
 
     my $q = query_parameters->get('q') // '';
@@ -49,26 +50,26 @@ post '/supprimer' => sub {
 
 # Show edit form
 get '/modifier' => sub {
-    my $nom   = query_parameters->get('nom');
+    my $nom = query_parameters->get('nom');
     my $email = query_parameters->get('email');
-    my $tel   = query_parameters->get('tel');
+    my $tel = query_parameters->get('tel');
     return template 'modifier', {
-        old_nom   => $nom,
-        old_email => $email,
-        old_tel   => $tel,
+        old_nom      => $nom,
+        old_email    => $email,
+        old_tel      => $tel,
         current_page => 'rechercher',
     };
 };
 
 # Handle edit submission
 post '/modifier' => sub {
-    my $old_nom   = body_parameters->get('old_nom');
+    my $old_nom = body_parameters->get('old_nom');
     my $old_email = body_parameters->get('old_email');
-    my $old_tel   = body_parameters->get('old_tel');
+    my $old_tel = body_parameters->get('old_tel');
 
-    my $new_nom   = body_parameters->get('nom');
+    my $new_nom = body_parameters->get('nom');
     my $new_email = body_parameters->get('email');
-    my $new_tel   = body_parameters->get('tel');
+    my $new_tel = body_parameters->get('tel');
 
     ContactManager::modifier_contact($old_nom, $old_email, $old_tel, $new_nom, $new_email, $new_tel);
 
@@ -88,7 +89,8 @@ get '/backup' => sub {
         require File::Copy;
         File::Copy::copy('contacts.db', $backup_file)
             or return "Impossible de créer $backup_file : $!";
-    } else {
+    }
+    else {
         return "Aucune base de données à sauvegarder.";
     }
 
@@ -98,14 +100,10 @@ get '/backup' => sub {
     };
 };
 
-
-
-use POSIX 'strftime';
-
 get '/restore' => sub {
     my $dir = 'backups';
     opendir(my $dh, $dir) or return "Impossible d'ouvrir $dir: $!";
-    my @files = grep { /\.db$/ && -f "$dir/$_" } readdir($dh);
+    my @files = grep {/\.db$/ && -f "$dir/$_"} readdir($dh);
     closedir $dh;
 
     my @backups;
@@ -113,15 +111,16 @@ get '/restore' => sub {
         if ($file =~ /_(\d{8})_(\d{6})\.db$/) {
             my ($date, $time) = ($1, $2);
             my $formatted_date = sprintf "%s-%s-%s %s:%s:%s",
-                substr($date,0,4), substr($date,4,2), substr($date,6,2),
-                substr($time,0,2), substr($time,2,2), substr($time,4,2);
+                substr($date, 0, 4), substr($date, 4, 2), substr($date, 6, 2),
+                substr($time, 0, 2), substr($time, 2, 2), substr($time, 4, 2);
             push @backups, { file => $file, date => $formatted_date };
-        } else {
+        }
+        else {
             push @backups, { file => $file, date => 'Inconnue' };
         }
     }
 
-    @backups = sort { $b->{date} cmp $a->{date} } @backups;
+    @backups = sort {$b->{date} cmp $a->{date}} @backups;
 
     template 'restore' => {
         current_page => 'restore',
@@ -140,7 +139,8 @@ get '/do_restore' => sub {
         File::Copy::copy("backups/$file", "contacts.db")
             or $msg = "Impossible de restaurer depuis $file : $!";
         $msg ||= "Restauration effectuée depuis : $file";
-    } else {
+    }
+    else {
         $msg = "Fichier de backup non spécifié ou inexistant.";
     }
 
@@ -159,7 +159,8 @@ post '/delete_backup' => sub {
     if ($file && -f "backups/$file") {
         unlink "backups/$file" or $msg = "Impossible de supprimer $file : $!";
         $msg ||= "Backup supprimé : $file";
-    } else {
+    }
+    else {
         $msg = "Fichier de backup non spécifié ou inexistant.";
     }
 
@@ -176,7 +177,5 @@ get '/contacts' => sub {
         contacts     => \@contacts,
     };
 };
-
-
 
 start;
