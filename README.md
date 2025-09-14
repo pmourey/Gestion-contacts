@@ -12,4 +12,4 @@ Perl + Dancer2 contact manager with full CRUD.
 - Restore backup
 - Responsive design with navbar and scrollable table
 
-#### Demo version -> http://philippe.mourey.com:50000
+#### Demo version (on request to @author) -> http://philippe.mourey.com:50000
