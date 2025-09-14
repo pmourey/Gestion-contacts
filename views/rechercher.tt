@@ -6,7 +6,7 @@
 
 <form action="/rechercher" method="get">
     <input type="text" name="q" placeholder="Nom, email ou téléphone"
-           value="[% recherche %]">
+           value="[% recherche %]" required>
     <button type="submit">Rechercher</button>
 </form>
 

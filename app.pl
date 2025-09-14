@@ -25,25 +25,16 @@ post '/ajouter' => sub {
 get '/rechercher' => sub {
     my $recherche = query_parameters->get('q');
     my @contacts;
-
-    if (defined $recherche && $recherche ne '') {
-        open my $fh, '<', 'contacts.csv' or return "Erreur ouverture fichier: $!";
-        while (my $ligne = <$fh>) {
-            chomp $ligne;
-            my ($nom, $email, $tel) = split /,/, $ligne;
-            if ($nom =~ /$recherche/i || $email =~ /$recherche/i || $tel =~ /$recherche/) {
-                push @contacts, { nom => $nom, email => $email, tel => $tel };
-            }
-        }
-        close $fh;
+    if ($recherche) {
+        @contacts = ContactManager::rechercher_contacts($recherche);
     }
-
     return template 'rechercher', {
         recherche     => $recherche,
         contacts      => \@contacts,
         current_page  => 'rechercher',
     };
 };
+
 
 # Delete contact
 post '/supprimer' => sub {
@@ -85,37 +76,22 @@ post '/modifier' => sub {
     redirect "/rechercher?q=$q";
 };
 
-# Backup contacts
-get '/backup_old' => sub {
-    my $backup_file = ContactManager::backup_contacts();
-    return template 'backup' => {
-        current_page => 'backup',
-        backup_file  => $backup_file,
-    };
-};
-
+# Backup contacts (copie du fichier SQLite)
 get '/backup' => sub {
     my $dir = 'backups';
-    mkdir $dir unless -d $dir;  # crée le dossier s'il n'existe pas
+    mkdir $dir unless -d $dir;
 
-    # Générer un timestamp YYYYMMDD_HHMMSS
     my $timestamp = strftime "%Y%m%d_%H%M%S", localtime;
-    my $backup_file = "$dir/contacts_backup_$timestamp.csv";
+    my $backup_file = "$dir/contacts_backup_$timestamp.db";
 
-    # Lire contacts existants et écrire le backup
-    if (-e 'contacts.csv') {
-        open my $in, '<', 'contacts.csv' or return "Impossible de lire contacts.csv : $!";
-        open my $out, '>', $backup_file or return "Impossible de créer $backup_file : $!";
-        while (my $line = <$in>) {
-            print $out $line;
-        }
-        close $in;
-        close $out;
+    if (-e 'contacts.db') {
+        require File::Copy;
+        File::Copy::copy('contacts.db', $backup_file)
+            or return "Impossible de créer $backup_file : $!";
     } else {
-        return "Aucun contact à sauvegarder.";
+        return "Aucune base de données à sauvegarder.";
     }
 
-    # Retourne template avec confirmation
     template 'backup' => {
         current_page => 'backup',
         backup_file  => $backup_file,
@@ -123,30 +99,18 @@ get '/backup' => sub {
 };
 
 
-get '/restore_old' => sub {
-    my $dir = 'backups';
-    opendir(my $dh, $dir) or return "Impossible d'ouvrir $dir: $!";
-    my @files = grep { /\.csv$/ && -f "$dir/$_" } readdir($dh);
-    closedir $dh;
-
-    return template 'restore' => {
-        current_page => 'restore',
-        backups      => \@files,
-    };
-};
 
 use POSIX 'strftime';
 
 get '/restore' => sub {
     my $dir = 'backups';
     opendir(my $dh, $dir) or return "Impossible d'ouvrir $dir: $!";
-    my @files = grep { /\.csv$/ && -f "$dir/$_" } readdir($dh);
+    my @files = grep { /\.db$/ && -f "$dir/$_" } readdir($dh);
     closedir $dh;
 
-    # Décoder le timestamp dans le nom du fichier
     my @backups;
     foreach my $file (@files) {
-        if ($file =~ /_(\d{8})_(\d{6})\.csv$/) {
+        if ($file =~ /_(\d{8})_(\d{6})\.db$/) {
             my ($date, $time) = ($1, $2);
             my $formatted_date = sprintf "%s-%s-%s %s:%s:%s",
                 substr($date,0,4), substr($date,4,2), substr($date,6,2),
@@ -157,7 +121,6 @@ get '/restore' => sub {
         }
     }
 
-    # Tri par date descendante (optionnel)
     @backups = sort { $b->{date} cmp $a->{date} } @backups;
 
     template 'restore' => {
@@ -166,16 +129,19 @@ get '/restore' => sub {
     };
 };
 
-# Exécution de la restauration (via paramètre ?file=)
+
+# Exécution de la restauration
 get '/do_restore' => sub {
     my $file = query_parameters->get('file');
     my $msg;
 
-    if ($file) {
-        ContactManager::restore_contacts("backups/$file");
-        $msg = "Restauration effectuée depuis : $file";
+    if ($file && -f "backups/$file") {
+        require File::Copy;
+        File::Copy::copy("backups/$file", "contacts.db")
+            or $msg = "Impossible de restaurer depuis $file : $!";
+        $msg ||= "Restauration effectuée depuis : $file";
     } else {
-        $msg = "Fichier de backup non spécifié.";
+        $msg = "Fichier de backup non spécifié ou inexistant.";
     }
 
     return template 'do_template' => {
@@ -183,6 +149,7 @@ get '/do_restore' => sub {
         message      => $msg,
     };
 };
+
 
 # Supprimer un backup
 post '/delete_backup' => sub {
@@ -203,23 +170,13 @@ post '/delete_backup' => sub {
 };
 
 get '/contacts' => sub {
-    my @contacts;
-
-    if (-e 'contacts.csv') {
-        open my $fh, '<', 'contacts.csv' or die "Impossible d'ouvrir contacts.csv : $!";
-        while (my $ligne = <$fh>) {
-            chomp $ligne;
-            my ($nom, $email, $tel) = split /,/, $ligne;
-            push @contacts, { nom => $nom, email => $email, tel => $tel };
-        }
-        close $fh;
-    }
-
+    my @contacts = ContactManager::lister_contacts();
     template 'contacts' => {
         current_page => 'contacts',
         contacts     => \@contacts,
     };
 };
+
 
 
 start;
