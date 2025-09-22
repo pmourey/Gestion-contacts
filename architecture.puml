@@ -1,0 +1,44 @@
+@startuml
+!theme plain
+
+' Scripts principaux
+component "app.pl" as APP
+component "migrate.pl" as MIGRATE
+
+' Module métier
+component "ContactManager.pm" as CM
+
+' Vues (templates)
+package "views/" {
+  [index.tt]
+  [rechercher.tt]
+  [contacts.tt]
+  [modifier.tt]
+  [backup.tt]
+  [restore.tt]
+  [_navbar.tt]
+  [_footer.tt]
+  [do_template.tt]
+}
+
+' Données et config
+database "contacts.db" as DB
+file "contacts.csv" as CSV
+file "config.yml" as CFG
+
+' Relations principales
+APP --> CM : utilise
+APP --> [index.tt]
+APP --> [rechercher.tt]
+APP --> [contacts.tt]
+APP --> [modifier.tt]
+APP --> [backup.tt]
+APP --> [restore.tt]
+APP --> [_navbar.tt]
+APP --> [_footer.tt]
+APP --> [do_template.tt]
+CM --> DB : lit/écrit
+MIGRATE --> CSV : lit
+MIGRATE --> DB : écrit
+
+@enduml

@@ -1,0 +1,15 @@
+@startuml
+!theme plain
+autonumber
+actor Utilisateur
+participant "Web (Dancer2)" as Web
+participant "ContactManager" as CM
+participant "DB (SQLite)" as DB
+Utilisateur -> Web : Remplit formulaire ajout
+Web -> CM : ajouter_contact(nom, email, tel)
+CM -> DB : INSERT contact
+DB --> CM : OK
+CM --> Web : Confirmation
+Web --> Utilisateur : Redirection / message
+@enduml
+

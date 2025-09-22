@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+
+' Composants techniques principaux
+actor "Utilisateur (navigateur web)" as User
+node "Serveur Web (Perl + Dancer2)" as Web {
+  component "app.pl" as APP
+  component "ContactManager.pm" as CM
+}
+database "contacts.db" as DB
+file "contacts.csv" as CSV
+folder "backups/" as BACKUPS
+file "config.yml" as CFG
+
+' Relations principales
+User --> APP : Requêtes HTTP (UI)
+APP --> CM : Appels métier
+CM --> DB : Accès SQL
+APP --> CSV : Export/Import CSV
+APP --> BACKUPS : Sauvegarde/Restaur.
+APP --> CFG : Lecture config
+
+@enduml
+

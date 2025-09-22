@@ -1,0 +1,18 @@
+@startuml
+!theme plain
+class Contact {
+  - id : int
+  - nom : string
+  - email : string
+  - tel : string
+}
+class ContactManager {
+  + ajouter_contact(nom, email, tel)
+  + lister_contacts()
+  + rechercher_contacts(recherche)
+  + supprimer_contact(id)
+  + modifier_contact(id, nom, email, tel)
+}
+ContactManager "1" *-- "*" Contact : gère
+@enduml
+

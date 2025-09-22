@@ -1,0 +1,16 @@
+@startuml
+!theme plain
+actor Utilisateur
+actor Admin
+rectangle "Application Web Gestion Contacts" {
+  Utilisateur -- (Consulter la liste des contacts)
+  Utilisateur -- (Rechercher un contact)
+  Utilisateur -- (Ajouter un contact)
+  Utilisateur -- (Modifier un contact)
+  Utilisateur -- (Supprimer un contact)
+  Utilisateur -- (Exporter les contacts)
+  Admin -- (Restaurer une sauvegarde)
+  Admin -- (Sauvegarder la base)
+}
+@enduml
+
